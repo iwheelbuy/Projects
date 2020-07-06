@@ -55,8 +55,8 @@ extension PackageDescription.Target {
          ],
          path: "Sources/Catcher",
          exclude: [
-            "Classes+Catcher.h",
-            "Classes+Catcher.m"
+            "Classes+Safely.h",
+            "Classes+Safely.m"
          ]
       )
    }
@@ -68,7 +68,7 @@ extension PackageDescription.Target {
          ],
          path: "Sources/Catcher",
          exclude: [
-            "Classes+Catcher.swift"
+            "Classes+Safely.swift"
          ],
          publicHeadersPath: ""
       )
