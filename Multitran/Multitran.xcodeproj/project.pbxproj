@@ -485,7 +485,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "Dependencies" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "../../Dependencies";
+			repositoryURL = "../";
 			requirement = {
 				branch = master;
 				kind = branch;

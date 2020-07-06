@@ -3,10 +3,10 @@
     "pins": [
       {
         "package": "Dependencies",
-        "repositoryURL": "/Users/iwheelbuy/Documents/Dependencies",
+        "repositoryURL": "/Users/iwheelbuy/Documents/Projects",
         "state": {
           "branch": "master",
-          "revision": "e2f2ff58f2ef354855d021d5348eb9ab489cabd5",
+          "revision": "d8b5c9b5f509ff944fb48ff296595f2d7e587840",
           "version": null
         }
       }
