@@ -6,7 +6,7 @@
 //  Copyright © 2020 iWheelBuy. All rights reserved.
 //
 
-import SwiftUI
+//import SwiftUI
 import Dependencies
 
 struct ContentView: View {
