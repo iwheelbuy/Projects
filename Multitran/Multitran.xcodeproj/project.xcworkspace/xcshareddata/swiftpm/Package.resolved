@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Dependencies",
+        "repositoryURL": "git@github.com:iwheelbuy/Dependencies.git",
+        "state": {
+          "branch": "master",
+          "revision": "e2f2ff58f2ef354855d021d5348eb9ab489cabd5",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
