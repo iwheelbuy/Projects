@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Catcher.build/master.swiftdeps"
+  },
+  "/Users/iwheelbuy/Documents/Projects/Sources/Catcher/Classes+Catcher.swift": {
+    "dependencies": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Catcher.build/Classes+Catcher.d",
+    "object": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Catcher.build/Classes+Catcher.swift.o",
+    "swiftmodule": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Catcher.build/Classes+Catcher~partial.swiftmodule",
+    "swift-dependencies": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Catcher.build/Classes+Catcher.swiftdeps"
+  }
+}

@@ -1,0 +1,1 @@
+{"object": {"dependencies": [{"basedOn": null, "packageRef": {"identity": "entwine", "kind": "remote", "name": "Entwine", "path": "git@github.com:tcldr/Entwine.git"}, "state": {"checkoutState": {"branch": null, "revision": "0f8ccc0d5c5594e4a025346796dd61855a1f46d3", "version": "0.9.0"}, "name": "checkout"}, "subpath": "Entwine"}]}, "version": 3}

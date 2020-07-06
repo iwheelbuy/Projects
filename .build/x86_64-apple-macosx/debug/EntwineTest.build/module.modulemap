@@ -1,0 +1,4 @@
+module EntwineTest {
+    header "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/EntwineTest.build/EntwineTest-Swift.h"
+    requires objc
+}

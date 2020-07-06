@@ -1,0 +1,5 @@
+version: "Apple Swift version 5.2.4 (swiftlang-1103.0.32.9 clang-1103.0.32.53)"
+options: "825c9b010b91fbfe39964195cb05360b"
+build_time: [1594013520, 401531000]
+inputs:
+  "/Users/iwheelbuy/Documents/Projects/Sources/Core/Imports.swift": [1594013516, 28170838]

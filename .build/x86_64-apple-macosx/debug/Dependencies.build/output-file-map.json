@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Dependencies.build/master.swiftdeps"
+  },
+  "/Users/iwheelbuy/Documents/Projects/Sources/Core/Imports.swift": {
+    "dependencies": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Dependencies.build/Imports.d",
+    "object": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Dependencies.build/Imports.swift.o",
+    "swiftmodule": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Dependencies.build/Imports~partial.swiftmodule",
+    "swift-dependencies": "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Dependencies.build/Imports.swiftdeps"
+  }
+}
