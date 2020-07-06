@@ -6,7 +6,9 @@ struct ContentView: View {
    }
 
    static var bitch: String {
-      try safe
+      try safely {
+         
+      }
       return Fucker.texts
    }
 }
