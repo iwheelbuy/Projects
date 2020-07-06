@@ -15,7 +15,7 @@ struct ContentView: View {
    }
 
    static var bitch: String {
-      return Fucker.text
+      return Fucker.texts
    }
 }
 
