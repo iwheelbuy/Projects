@@ -2,7 +2,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Catcher : NSObject
+@interface CatcherInterface: NSObject
 
 + (void) try:(__attribute__((noescape)) void(^ _Nullable)(void))try catch:(__attribute__((noescape)) void(^ _Nullable)(NSException *exception))catch finally: (__attribute__((noescape)) void(^ _Nullable)(void))finally;
 

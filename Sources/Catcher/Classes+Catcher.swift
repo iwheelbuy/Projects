@@ -3,7 +3,7 @@ import CatcherObjc
 public func safely<T>(_ block: () throws -> T) throws -> T {
     var value: T?
     var error: Error!
-    Catcher.try({
+    CatcherInterface.try({
         do {
             value = try block()
         } catch let _error {
