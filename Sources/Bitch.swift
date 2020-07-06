@@ -1,5 +1,5 @@
 import Foundation
-import SwiftUI
+@_exported import SwiftUI
 
 public struct Fucker {
 
