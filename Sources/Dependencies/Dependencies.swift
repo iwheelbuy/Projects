@@ -6,5 +6,5 @@ struct Dependencies {
 
 public struct Fucker {
 
-   public let text = "Fuck you"
+   public static let text = "Fuck you"
 }
