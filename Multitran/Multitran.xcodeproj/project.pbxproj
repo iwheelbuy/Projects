@@ -39,6 +39,8 @@
 		7A109DB524B2D90A00ABF630 /* MultitranTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultitranTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A109DB924B2D90A00ABF630 /* MultitranTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultitranTests.swift; sourceTree = "<group>"; };
 		7A109DBB24B2D90A00ABF630 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A109DC724B2DB7000ABF630 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Sources; path = ../Sources; sourceTree = "<group>"; };
+		7A109DC824B2DB7000ABF630 /* Tests */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Tests; path = ../Tests; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,8 @@
 		7A109D9624B2D90900ABF630 = {
 			isa = PBXGroup;
 			children = (
+				7A109DC724B2DB7000ABF630 /* Sources */,
+				7A109DC824B2DB7000ABF630 /* Tests */,
 				7A109DA124B2D90900ABF630 /* Multitran */,
 				7A109DB824B2D90A00ABF630 /* MultitranTests */,
 				7A109DA024B2D90900ABF630 /* Products */,
@@ -179,7 +183,7 @@
 			);
 			mainGroup = 7A109D9624B2D90900ABF630;
 			packageReferences = (
-				7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "Dependencies" */,
+				7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "." */,
 			);
 			productRefGroup = 7A109DA024B2D90900ABF630 /* Products */;
 			projectDirPath = "";
@@ -483,9 +487,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "Dependencies" */ = {
+		7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "." */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "../";
+			repositoryURL = ../;
 			requirement = {
 				branch = master;
 				kind = branch;
@@ -496,7 +500,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7A109DC524B2D94B00ABF630 /* Dependencies */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "Dependencies" */;
+			package = 7A109DC424B2D94B00ABF630 /* XCRemoteSwiftPackageReference "." */;
 			productName = Dependencies;
 		};
 /* End XCSwiftPackageProductDependency section */

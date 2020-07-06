@@ -13,6 +13,10 @@ struct ContentView: View {
    var body: some View {
       Text("Hello, World!")
    }
+
+   static var bitch: String {
+      return Fucker()
+   }
 }
 
 struct ContentView_Previews: PreviewProvider {
