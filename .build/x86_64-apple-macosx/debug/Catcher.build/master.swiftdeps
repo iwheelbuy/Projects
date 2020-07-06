@@ -1,5 +1,0 @@
-version: "Apple Swift version 5.2.4 (swiftlang-1103.0.32.9 clang-1103.0.32.53)"
-options: "a25a018f8c21919b3a37936452b69a90"
-build_time: [1594013583, 786436000]
-inputs:
-  "/Users/iwheelbuy/Documents/Projects/Sources/Catcher/Classes+Catcher.swift": [1594013395, 826943444]

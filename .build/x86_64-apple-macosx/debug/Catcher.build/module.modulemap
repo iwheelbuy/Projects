@@ -1,4 +1,0 @@
-module Catcher {
-    header "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Catcher.build/Catcher-Swift.h"
-    requires objc
-}

@@ -1,4 +1,0 @@
-module CatcherObjc {
-    umbrella "/Users/iwheelbuy/Documents/Projects/Sources/Catcher"
-    export *
-}

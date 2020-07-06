@@ -1,4 +1,0 @@
-module Entwine {
-    header "/Users/iwheelbuy/Documents/Projects/.build/x86_64-apple-macosx/debug/Entwine.build/Entwine-Swift.h"
-    requires objc
-}
