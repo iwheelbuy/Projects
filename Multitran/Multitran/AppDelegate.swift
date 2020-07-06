@@ -6,7 +6,7 @@
 //  Copyright © 2020 iWheelBuy. All rights reserved.
 //
 
-import UIKit
+import Dependencies
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

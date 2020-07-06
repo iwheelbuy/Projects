@@ -6,8 +6,7 @@
 //  Copyright © 2020 iWheelBuy. All rights reserved.
 //
 
-import UIKit
-import SwiftUI
+import Dependencies
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

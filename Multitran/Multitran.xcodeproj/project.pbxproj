@@ -40,7 +40,6 @@
 		7A109DB924B2D90A00ABF630 /* MultitranTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultitranTests.swift; sourceTree = "<group>"; };
 		7A109DBB24B2D90A00ABF630 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A109DC724B2DB7000ABF630 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Sources; path = ../Sources; sourceTree = "<group>"; };
-		7A109DC824B2DB7000ABF630 /* Tests */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Tests; path = ../Tests; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +65,6 @@
 			isa = PBXGroup;
 			children = (
 				7A109DC724B2DB7000ABF630 /* Sources */,
-				7A109DC824B2DB7000ABF630 /* Tests */,
 				7A109DA124B2D90900ABF630 /* Multitran */,
 				7A109DB824B2D90A00ABF630 /* MultitranTests */,
 				7A109DA024B2D90900ABF630 /* Products */,
