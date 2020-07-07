@@ -6,13 +6,9 @@ import PackageDescription
 let package = Package(
    name: "Dependencies",
    platforms: [
-      .macOS(.v10_15),
       .iOS(.v13),
-      .tvOS(.v13),
-      .watchOS(.v6)
    ],
    products: [
-      // Products define the executables and libraries produced by a package, and make them visible to other packages.
       .library(
          name: "Dependencies",
          targets: [
@@ -21,15 +17,14 @@ let package = Package(
       ),
    ],
    dependencies: [
-      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.0")
+      .package(url: "git@github.com:sergdort/CombineFeedback.git", from: "0.7.0"),
+      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.0"),
    ],
    targets: [
-      // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-      // Targets can depend on other targets in this package, and on products in packages which this package depends on.
       .target(
          name: "Dependencies",
          dependencies: [
-            "Catcher"
+            "Catcher",
          ],
          path: "Sources/Core"
       ),
@@ -37,13 +32,16 @@ let package = Package(
          name: "DependenciesTests",
          dependencies: [
             "Dependencies",
-            "Entwine"
-         ]
+            .product(name: "EntwineTest", package: "Entwine")
+         ],
+         path: "Tests"
       ),
       .catcher,
       .catcherObjc
    ]
 )
+
+// MARK: - Catcher
 
 extension PackageDescription.Target {
 
