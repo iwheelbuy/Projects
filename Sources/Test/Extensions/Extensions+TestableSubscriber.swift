@@ -11,6 +11,10 @@ public extension EntwineTest.TestableSubscriber {
          })
    }
 
+   var inputs: [Input] {
+      return values.compactMap({ $0.input })
+   }
+
    var isCompleted: Bool {
       return values.last?.signal.isCompletion ?? false
    }
