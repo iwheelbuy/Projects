@@ -22,12 +22,52 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>Core</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>Dependencies</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>DependenciesCore</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DependenciesCoreTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DependenciesTest</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>DependenciesTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>Nice</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>Test</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>TestsPublishers</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>dependenciesCoreTests</key>
 		<dict>
 			<key>primary</key>
 			<true/>

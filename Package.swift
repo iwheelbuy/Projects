@@ -10,38 +10,35 @@ let package = Package(
    ],
    products: [
       .library(
-         name: "Dependencies",
+         name: "Nice",
          targets: [
-            "Dependencies"
+            "DependenciesCore"
          ]
       ),
+//      .library(
+//         name: "Test",
+//         targets: [
+//            "DependenciesTests",
+//            "EntwineTest"
+//         ]
+//      ),
    ],
    dependencies: [
       .package(url: "git@github.com:sergdort/CombineFeedback.git", from: "0.7.0"),
       .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.0"),
    ],
    targets: [
-      .target(
-         name: "Dependencies",
-         dependencies: [
-            "Catcher",
-         ],
-         path: "Sources/Core"
-      ),
-      .testTarget(
-         name: "DependenciesTests",
-         dependencies: [
-            "Dependencies",
-            .product(name: "EntwineTest", package: "Entwine")
-         ],
-         path: "Tests"
-      ),
       .catcher,
-      .catcherObjc
+      .catcherObjc,
+      .core,
+      .dependenciesCore,
+      .dependenciesTest,
+      .test,
+      .testsPublishers
    ]
 )
 
-// MARK: - Catcher
+// MARK: - Dependencies
 
 extension PackageDescription.Target {
 
@@ -52,9 +49,8 @@ extension PackageDescription.Target {
             "CatcherObjc"
          ],
          path: "Sources/Catcher",
-         exclude: [
-            "Classes+Safely.h",
-            "Classes+Safely.m"
+         sources: [
+            "Classes+Safely.swift"
          ]
       )
    }
@@ -62,13 +58,69 @@ extension PackageDescription.Target {
    static var catcherObjc: PackageDescription.Target {
       return PackageDescription.Target.target(
          name: "CatcherObjc",
-         dependencies: [
-         ],
          path: "Sources/Catcher",
-         exclude: [
-            "Classes+Safely.swift"
+         sources: [
+            "Classes+Safely.h",
+            "Classes+Safely.m"
          ],
          publicHeadersPath: ""
+      )
+   }
+
+   static var core: PackageDescription.Target {
+      return PackageDescription.Target.target(
+         name: "Core",
+         dependencies: [
+            "Catcher"
+         ],
+         path: "Sources/Core"
+      )
+   }
+
+   static var dependenciesCore: PackageDescription.Target {
+      return PackageDescription.Target.target(
+         name: "DependenciesCore",
+         dependencies: [
+            "Core",
+            "Catcher"
+         ],
+         path: "Sources/Dependencies",
+         sources: [
+            "Dependencies+Core.swift"
+         ]
+      )
+   }
+
+   static var dependenciesTest: PackageDescription.Target {
+      return PackageDescription.Target.target(
+         name: "DependenciesTest",
+         dependencies: [
+            "Test"
+         ],
+         path: "Sources/Dependencies",
+         sources: [
+            "Dependencies+Test.swift"
+         ]
+      )
+   }
+
+   static var test: PackageDescription.Target {
+      return PackageDescription.Target.target(
+         name: "Test",
+         dependencies: [
+            .product(name: "EntwineTest", package: "Entwine")
+         ],
+         path: "Sources/Test"
+      )
+   }
+
+   static var testsPublishers: PackageDescription.Target {
+      return PackageDescription.Target.testTarget(
+         name: "TestsPublishers",
+         dependencies: [
+            "DependenciesTest"
+         ],
+         path: "Tests/Publishers"
       )
    }
 }
