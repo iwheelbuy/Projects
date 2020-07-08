@@ -6,7 +6,7 @@ final class Sequence: TestCase {
 
    func test_common_behavior() {
       let sequence = Array(0 ... 1 + arc4random() % 10).map({ _ in arc4random() })
-      let publisher = Publishers.Sequence<[UInt32], Never>(sequence: sequence)
+      let publisher = Publishers.Sequence<[UInt32], TestError>(sequence: sequence)
       let subscriber = scheduler.start(configuration: configuration, create: { publisher })
       XCTAssertEqual(subscriber.inputs, sequence)
       subscriber.values.forEach({ value in

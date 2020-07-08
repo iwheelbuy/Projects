@@ -1,9 +1,9 @@
 import DependenciesTest
 /*
- Публикует весь массив собранных данных в момент завершения upstream. Если
- upstream завершится ошибкой, то ничего опубликовано не будет.
+ Применяется трансформация к каждому новому значению из upstream. Каждое
+ значение трансформации публикуется.
  */
-final class Collect: TestCase {
+final class Map: TestCase {
 
    func test_common_behavior() {
       let upstream: TestablePublisher<String, TestError> = scheduler.createRelativeTestablePublisher([
@@ -12,10 +12,14 @@ final class Collect: TestCase {
          (3, .input("c")),
          (4, .completion(.finished))
       ])
-      let publisher = Publishers.Collect(upstream: upstream)
+      let publisher = Publishers.Map(upstream: upstream, transform: { $0.uppercased() })
       let subscriber = scheduler.start(configuration: configuration, create: { publisher })
-      XCTAssertEqual(subscriber.inputs.map({ $0.joined() }), ["abc"])
-      XCTAssertEqual(subscriber.values[1].time, configuration.subscribed + 4)
+      XCTAssertEqual(subscriber.inputs.count, 3)
+      XCTAssertEqual(subscriber.inputs, ["A", "B", "C"])
+      for index in 1 ... 3 {
+         let time = VirtualTime(index)
+         XCTAssertEqual(subscriber.values[index].time, configuration.subscribed + time)
+      }
       XCTAssertTrue(subscriber.subscribed(time: configuration.subscribed))
       XCTAssertTrue(subscriber.completed(time: configuration.subscribed + 4))
    }
@@ -27,9 +31,14 @@ final class Collect: TestCase {
          (3, .input("c")),
          (4, .completion(.failure(.empty)))
       ])
-      let publisher = Publishers.Collect(upstream: upstream)
+      let publisher = Publishers.Map(upstream: upstream, transform: { $0.uppercased() })
       let subscriber = scheduler.start(configuration: configuration, create: { publisher })
-      XCTAssertTrue(subscriber.inputs.isEmpty)
+      XCTAssertEqual(subscriber.inputs.count, 3)
+      XCTAssertEqual(subscriber.inputs, ["A", "B", "C"])
+      for index in 1 ... 3 {
+         let time = VirtualTime(index)
+         XCTAssertEqual(subscriber.values[index].time, configuration.subscribed + time)
+      }
       XCTAssertTrue(subscriber.subscribed(time: configuration.subscribed))
       XCTAssertTrue(subscriber.failed(time: configuration.subscribed + 4))
    }

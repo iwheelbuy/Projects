@@ -1,32 +1,33 @@
 import DependenciesTest
 /*
  Применяется трансформация к каждому новому значению из upstream и предыдущему
- результату трансформации. Финальное значение трансформации публикуется
- непосредственно перед успешным завершением upstream. В случае завершения с
- ошибкой - значение не будет опубликовано.
+ результату трансформации. Каждое значение трансформации публикуется.
  */
-final class Reduce: TestCase {
+final class Scan: TestCase {
 
    func test_common_behavior() {
       let upstream: TestablePublisher<String, TestError> = scheduler.createRelativeTestablePublisher([
          (1, .input("a")),
          (2, .input("b")),
          (3, .input("c")),
-         (9, .completion(.finished))
+         (4, .completion(.finished))
       ])
-      let publisher = Publishers.Reduce(
+      let publisher = Publishers.Scan(
          upstream: upstream,
-         initial: "",
+         initialResult: "",
          nextPartialResult: { previous, next -> String in
             return previous + next
          }
       )
       let subscriber = scheduler.start(configuration: configuration, create: { publisher })
-      XCTAssertEqual(subscriber.inputs.count, 1)
-      XCTAssertEqual(subscriber.inputs.first, "abc")
-      XCTAssertEqual(subscriber.values[1].time, configuration.subscribed + 9)
+      XCTAssertEqual(subscriber.inputs.count, 3)
+      XCTAssertEqual(subscriber.inputs, ["a", "ab", "abc"])
+      for index in 1 ... 3 {
+         let time = VirtualTime(index)
+         XCTAssertEqual(subscriber.values[index].time, configuration.subscribed + time)
+      }
       XCTAssertTrue(subscriber.subscribed(time: configuration.subscribed))
-      XCTAssertTrue(subscriber.completed(time: configuration.subscribed + 9))
+      XCTAssertTrue(subscriber.completed(time: configuration.subscribed + 4))
    }
 
    func test_failure_behavior() {
@@ -34,18 +35,25 @@ final class Reduce: TestCase {
          (1, .input("a")),
          (2, .input("b")),
          (3, .input("c")),
-         (9, .completion(.failure(.empty)))
+         (4, .completion(.failure(.empty)))
       ])
-      let publisher = Publishers.Reduce(
+      let publisher = Publishers.Scan(
          upstream: upstream,
-         initial: "",
+         initialResult: "",
          nextPartialResult: { previous, next -> String in
             return previous + next
          }
       )
       let subscriber = scheduler.start(configuration: configuration, create: { publisher })
-      XCTAssertEqual(subscriber.inputs.count, 0)
+      XCTAssertEqual(subscriber.inputs.count, 3)
+      XCTAssertEqual(subscriber.inputs, ["a", "ab", "abc"])
+      for index in 1 ... 3 {
+         let time = VirtualTime(index)
+         XCTAssertEqual(subscriber.values[index].time, configuration.subscribed + time)
+      }
       XCTAssertTrue(subscriber.subscribed(time: configuration.subscribed))
-      XCTAssertTrue(subscriber.failed(time: configuration.subscribed + 9))
+      XCTAssertTrue(subscriber.failed(time: configuration.subscribed + 4))
    }
 }
+
+

@@ -7,7 +7,7 @@ final class CollectByTime: TestCase {
    func test_common_behavior() {
       let configuration = TestScheduler.Configuration.default
       let scheduler = TestScheduler()
-      let upstream: TestablePublisher<String, Never> = scheduler.createRelativeTestablePublisher([
+      let upstream: TestablePublisher<String, TestError> = scheduler.createRelativeTestablePublisher([
          (1, .input("a")),
          (2, .input("b")),
          (3, .input("c")),
