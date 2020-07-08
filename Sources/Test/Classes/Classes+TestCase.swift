@@ -3,10 +3,27 @@ import XCTest
 
 open class TestCase: XCTestCase {
 
-   public var configuration = TestScheduler.Configuration.default
-   public var scheduler = TestScheduler()
+   private var _configuration: TestScheduler.Configuration!
+   public var configuration: TestScheduler.Configuration {
+      get {
+         return _configuration
+      }
+      set {
+         _configuration = newValue
+      }
+   }
+   private var _scheduler: TestScheduler!
+   public var scheduler: TestScheduler {
+      get {
+         return _scheduler
+      }
+      set {
+         _scheduler = newValue
+      }
+   }
 
    open override func setUp() {
-      scheduler = TestScheduler()
+      _configuration = TestScheduler.Configuration.default
+      _scheduler = TestScheduler()
    }
 }

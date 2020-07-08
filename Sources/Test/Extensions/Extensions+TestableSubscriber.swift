@@ -15,11 +15,46 @@ public extension EntwineTest.TestableSubscriber {
       return values.compactMap({ $0.input })
    }
 
-   var isCompleted: Bool {
-      return values.last?.signal.isCompletion ?? false
+   func completed(time: VirtualTime? = nil) -> Bool {
+      guard let value = values.last else {
+         return false
+      }
+      if let time = time, time != value.time {
+         return false
+      }
+      return value.signal.isCompletion
    }
 
-   var isSubscribed: Bool {
-      return values.first?.signal.isSubscription ?? false
+   func failed(time: VirtualTime? = nil) -> Bool {
+      guard let value = values.last else {
+         return false
+      }
+      if let time = time, time != value.time {
+         return false
+      }
+      return value.signal.isFailure
+   }
+
+   func subscribed(time: VirtualTime? = nil) -> Bool {
+      guard let value = values.first else {
+         return false
+      }
+      if let time = time, time != value.time {
+         return false
+      }
+      return value.signal.isSubscription
+   }
+}
+
+public extension EntwineTest.TestableSubscriber where Failure: Equatable {
+
+   func failed(failure: Failure, time: VirtualTime? = nil) -> Bool {
+      guard let value = values.last else {
+         return false
+      }
+      if let time = time, time != value.time {
+         return false
+      }
+      return value.signal.failure == failure
    }
 }

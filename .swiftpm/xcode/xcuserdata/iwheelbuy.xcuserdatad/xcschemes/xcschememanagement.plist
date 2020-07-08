@@ -22,6 +22,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>CombineTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>Core</key>
 		<dict>
 			<key>primary</key>

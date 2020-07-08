@@ -14,14 +14,7 @@ let package = Package(
          targets: [
             "DependenciesCore"
          ]
-      ),
-//      .library(
-//         name: "Test",
-//         targets: [
-//            "DependenciesTests",
-//            "EntwineTest"
-//         ]
-//      ),
+      )
    ],
    dependencies: [
       .package(url: "git@github.com:sergdort/CombineFeedback.git", from: "0.7.0"),
@@ -34,7 +27,7 @@ let package = Package(
       .dependenciesCore,
       .dependenciesTest,
       .test,
-      .testsPublishers
+      .combineTests
    ]
 )
 
@@ -114,13 +107,13 @@ extension PackageDescription.Target {
       )
    }
 
-   static var testsPublishers: PackageDescription.Target {
+   static var combineTests: PackageDescription.Target {
       return PackageDescription.Target.testTarget(
-         name: "TestsPublishers",
+         name: "CombineTests",
          dependencies: [
             "DependenciesTest"
          ],
-         path: "Tests/Publishers"
+         path: "Tests/Combine"
       )
    }
 }
