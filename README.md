@@ -1,4 +1,4 @@
-# Projects
+# Useful Links
 
 * https://github.com/tcldr/Entwine (Testing tools and utilities for Apple's Combine framework)
 * https://github.com/sergdort/CombineFeedback (Unidirectional reactive architecture using new Apple Combine framework)
