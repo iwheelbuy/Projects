@@ -1,94 +1,41 @@
 import DependenciesTest
 /*
- Если за временной интервал массив успевает заполниться до требуемого размера,
- то он публикуется в момент получения последнего элемента. После публикации
- массив очищается и процедура повторяется. Если массив к окончанию временного
- интервала окажется не пустым, то он опубликуется в момент окончания временного
- интервала.
+
  */
-final class CollectByTime: XCTestCase {
-
-   private class Input {
-
-      private lazy var _interval: Int = {
-         let interval = Int(Double(values.max()!) / Double(5 + arc4random_uniform(5)))
-         return interval % 2 == 0 ? interval : interval + 1
-      }()
-      private(set) lazy var values: [Int] = {
-         let array = Array(0 ... 50).map({ _ in Int(1 + arc4random_uniform(100)) })
-         return Set(array).filter({ $0 % 2 != 0 }).sorted()
-      }()
-      let count = Int(2 + arc4random_uniform(4))
-      let microseconds: Int
-
-      var expected: [ArraySlice<Int>] {
-         return Array(0 ... values.max()! / _interval)
-            .map({ value -> ClosedRange<Int> in
-               return value * _interval ... (value + 1) * _interval
-            })
-            .flatMap({ range -> [ArraySlice<Int>] in
-               let size = count
-               return values
-                  .filter({ range.contains($0) })
-                  .slices(size: size)
-            })
-            .filter({ $0.isNotEmpty })
-      }
-
-      init(microseconds: Int = 15) {
-         self.microseconds = microseconds
-      }
-
-      var interval: DispatchQueue.SchedulerTimeType.Stride {
-         return .microseconds(_interval * microseconds)
-      }
-
-      func deadline(_ value: Int? = nil) -> DispatchTime {
-         if let value = value {
-            let delay = TimeInterval(value * microseconds) / 1000000
-            return DispatchTime.now() + delay
-         } else {
-            let delay = TimeInterval((values.max()! + _interval + 1) * microseconds) / 1000000
-            return DispatchTime.now() + delay
-         }
-      }
-   }
+final class SubscribeOn: TestCase {
 
    func test_common_behavior() {
-      DispatchQueue.concurrentPerform(iterations: 100) { _ in
-         var equal = false
-         for microseconds in [666, 1111, 3333, 7777] where equal == false {
-            let input = Input(microseconds: microseconds)
-            let group = DispatchGroup()
-            group.enter()
-            let upstream = PassthroughSubject<Int, Never>()
-            let strategy = Publishers.TimeGroupingStrategy<DispatchQueue>
-               .byTimeOrCount(DispatchQueue.global(qos: .userInteractive), input.interval, input.count)
-            let publisher = Publishers.CollectByTime(
-               upstream: upstream,
-               strategy: strategy,
-               options: nil
-            )
-            var emitted = [[Int]]()
-            let cancel = publisher.sink(receiveValue: { emitted.append($0) })
-            for value in input.values {
-               let deadline = input.deadline(value)
-               DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: deadline) {
-                  upstream.send(value)
-               }
-            }
-            let deadline = input.deadline()
-            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: deadline) {
-               group.leave()
-            }
-            group.wait()
-            let expected = input.expected.map({ Array($0) })
-            equal = emitted == expected
-            if equal == false {
-               print("~>", microseconds)
-            }
-         }
-         XCTAssertTrue(equal)
-      }
+      let group = DispatchGroup()
+      group.enter()
+      group.enter()
+      var counter = 0
+      let scheduler0 = DispatchQueue(label: "scheduler0", qos: .userInteractive, attributes: .concurrent)
+      let scheduler1 = DispatchQueue(label: "scheduler1", qos: .userInteractive, attributes: .concurrent)
+      let upstream = PassthroughSubject<Int, Never>()
+      let publisher0 = Publishers.SubscribeOn(upstream: upstream, scheduler: scheduler0, options: nil)
+      let publisher1 = Publishers.SubscribeOn(upstream: publisher0, scheduler: scheduler1, options: nil)
+      publisher1
+         .handleEvents(receiveSubscription: { _ in
+            XCTAssertEqual(Thread.name, "scheduler0")
+         }, receiveOutput: { _ in
+            XCTAssertNotEqual(Thread.name, "scheduler0")
+            counter += 1
+            group.leave()
+         })
+         .sink(receiveValue: { _ in })
+         .store(in: &cancellables)
+      upstream
+         .handleEvents(receiveSubscription: { _ in
+            XCTAssertNotEqual(Thread.name, "scheduler0")
+         }, receiveOutput: { _ in
+            XCTAssertNotEqual(Thread.name, "scheduler0")
+            counter += 1
+            group.leave()
+         })
+         .sink(receiveValue: { _ in })
+         .store(in: &cancellables)
+      upstream.send(0)
+      group.wait()
+      XCTAssertEqual(counter, 2)
    }
 }

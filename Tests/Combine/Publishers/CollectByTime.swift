@@ -6,7 +6,7 @@ import DependenciesTest
  интервала окажется не пустым, то он опубликуется в момент окончания временного
  интервала.
  */
-final class CollectByTime: XCTestCase {
+final class CollectByTime: TestCase {
 
    private class Input {
 
@@ -70,7 +70,9 @@ final class CollectByTime: XCTestCase {
                options: nil
             )
             var emitted = [[Int]]()
-            let cancel = publisher.sink(receiveValue: { emitted.append($0) })
+            publisher
+               .sink(receiveValue: { emitted.append($0) })
+               .store(in: &cancellables)
             for value in input.values {
                let deadline = input.deadline(value)
                DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: deadline) {
