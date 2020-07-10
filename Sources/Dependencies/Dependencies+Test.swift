@@ -1,4 +1,5 @@
 @_exported import Combine
+@_exported import Core
 @_exported import Entwine
 @_exported import EntwineTest
 @_exported import Foundation

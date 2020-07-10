@@ -6,55 +6,10 @@ import DependenciesTest
  интервала окажется не пустым, то он опубликуется в момент окончания временного
  интервала.
  */
-final class CollectByTime: XCTestCase {
-
-   private class Input {
-
-      private lazy var _interval: Int = {
-         let interval = Int(Double(values.max()!) / Double(5 + arc4random_uniform(5)))
-         return interval % 2 == 0 ? interval : interval + 1
-      }()
-      private(set) lazy var values: [Int] = {
-         let array = Array(0 ... 50).map({ _ in Int(1 + arc4random_uniform(100)) })
-         return Set(array).filter({ $0 % 2 != 0 }).sorted()
-      }()
-      let count = Int(2 + arc4random_uniform(4))
-      let microseconds: Int
-
-      var expected: [ArraySlice<Int>] {
-         return Array(0 ... values.max()! / _interval)
-            .map({ value -> ClosedRange<Int> in
-               return value * _interval ... (value + 1) * _interval
-            })
-            .flatMap({ range -> [ArraySlice<Int>] in
-               let size = count
-               return values
-                  .filter({ range.contains($0) })
-                  .slices(size: size)
-            })
-            .filter({ $0.isNotEmpty })
-      }
-
-      init(microseconds: Int = 15) {
-         self.microseconds = microseconds
-      }
-
-      var interval: DispatchQueue.SchedulerTimeType.Stride {
-         return .microseconds(_interval * microseconds)
-      }
-
-      func deadline(_ value: Int? = nil) -> DispatchTime {
-         if let value = value {
-            let delay = TimeInterval(value * microseconds) / 1000000
-            return DispatchTime.now() + delay
-         } else {
-            let delay = TimeInterval((values.max()! + _interval + 1) * microseconds) / 1000000
-            return DispatchTime.now() + delay
-         }
-      }
-   }
+final class ReceiveOn: XCTestCase {
 
    func test_common_behavior() {
+      
       DispatchQueue.concurrentPerform(iterations: 100) { _ in
          var equal = false
          for microseconds in [666, 1111, 3333, 7777] where equal == false {
