@@ -1,60 +1,27 @@
 import EntwineTest
 
-public extension EntwineTest.TestableSubscriber {
+public extension EntwineTest.TestableSubscriber where Failure: Equatable, Input: Equatable {
 
-   var values: [TestValue<Input, Failure>] {
+   var events: [TestEvent<Input>] {
       return recordedOutput
-         .map({ values -> TestValue<Input, Failure> in
-            let signal = values.1
-            let time = values.0
-            return TestValue(signal: signal, time: time)
+         .map({ (time, signal) -> TestEvent<Input> in
+            switch signal {
+            case .completion(let completion):
+               switch completion {
+               case .failure(let failure):
+                  if let failure = failure as? TestError {
+                     return TestEvent(case: .failure(failure), time: time)
+                  } else {
+                     return TestEvent(case: .failure(.undefined), time: time)
+                  }
+               case .finished:
+                  return TestEvent(case: .success, time: time)
+               }
+            case .input(let value):
+               return TestEvent(case: .value(value), time: time)
+            case .subscription:
+               return TestEvent(case: .subscription, time: time)
+            }
          })
-   }
-
-   var inputs: [Input] {
-      return values.compactMap({ $0.input })
-   }
-
-   func completed(time: VirtualTime? = nil) -> Bool {
-      guard let value = values.last else {
-         return false
-      }
-      if let time = time, time != value.time {
-         return false
-      }
-      return value.signal.isCompletion
-   }
-
-   func failed(time: VirtualTime? = nil) -> Bool {
-      guard let value = values.last else {
-         return false
-      }
-      if let time = time, time != value.time {
-         return false
-      }
-      return value.signal.isFailure
-   }
-
-   func subscribed(time: VirtualTime? = nil) -> Bool {
-      guard let value = values.first else {
-         return false
-      }
-      if let time = time, time != value.time {
-         return false
-      }
-      return value.signal.isSubscription
-   }
-}
-
-public extension EntwineTest.TestableSubscriber where Failure: Equatable {
-
-   func failed(failure: Failure, time: VirtualTime? = nil) -> Bool {
-      guard let value = values.last else {
-         return false
-      }
-      if let time = time, time != value.time {
-         return false
-      }
-      return value.signal.failure == failure
    }
 }

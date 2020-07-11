@@ -6,7 +6,7 @@ import DependenciesTest
  интервала окажется не пустым, то он опубликуется в момент окончания временного
  интервала.
  */
-final class CollectByTime: TestCase {
+final class CollectByTime: XCTestCase {
 
    private class Input {
 
@@ -14,10 +14,11 @@ final class CollectByTime: TestCase {
          let interval = Int(Double(values.max()!) / Double(5 + arc4random_uniform(5)))
          return interval % 2 == 0 ? interval : interval + 1
       }()
-      private(set) lazy var values: [Int] = {
-         let array = Array(0 ... 50).map({ _ in Int(1 + arc4random_uniform(100)) })
-         return Set(array).filter({ $0 % 2 != 0 }).sorted()
-      }()
+      private(set) lazy var values = Array(0 ... 50)
+         .map({ _ in Int(1 + arc4random_uniform(100)) })
+         .set
+         .filter({ $0 % 2 != 0 })
+         .sorted()
       let count = Int(2 + arc4random_uniform(4))
       let microseconds: Int
 
@@ -56,6 +57,7 @@ final class CollectByTime: TestCase {
 
    func test_common_behavior() {
       DispatchQueue.concurrentPerform(iterations: 100) { _ in
+         var cancellables = Set<AnyCancellable>()
          var equal = false
          for microseconds in [666, 1111, 3333, 7777] where equal == false {
             let input = Input(microseconds: microseconds)
@@ -86,9 +88,6 @@ final class CollectByTime: TestCase {
             group.wait()
             let expected = input.expected.map({ Array($0) })
             equal = emitted == expected
-            if equal == false {
-               print("~>", microseconds)
-            }
          }
          XCTAssertTrue(equal)
       }

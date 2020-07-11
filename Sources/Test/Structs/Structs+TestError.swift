@@ -1,9 +1,9 @@
-import Entwine
-import EntwineTest
+import Foundation
 
-public enum TestError: Error, Equatable {
+public enum TestError: Error, Hashable {
 
-   case empty
+   case custom(AnyHashable)
+   case `default`
    case thrown
    case undefined
 }
