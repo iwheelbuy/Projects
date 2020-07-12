@@ -57,9 +57,9 @@ final class CollectByTime: XCTestCase {
 
    func test_common_behavior() {
       DispatchQueue.concurrentPerform(iterations: 100) { _ in
-         var cancellables = Set<AnyCancellable>()
          var equal = false
          for microseconds in [666, 1111, 3333, 7777] where equal == false {
+            var cancellables = Set<AnyCancellable>()
             let input = Input(microseconds: microseconds)
             let group = DispatchGroup()
             group.enter()

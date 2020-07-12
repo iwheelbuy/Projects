@@ -7,13 +7,13 @@ public class TestStorage {
 
    public var cancellables: Set<AnyCancellable> = Set()
    private let configuration: TestScheduler.Configuration
-   private let scheduler = TestScheduler()
+   private let scheduler = TestScheduler(initialClock: -3)
 
-   public init(timer: [Int]) {
+   public init() {
       var configuration = TestScheduler.Configuration.default
-      configuration.created = VirtualTime(timer.min()! - 2)
-      configuration.subscribed = VirtualTime(timer.min()! - 1)
-      configuration.cancelled = VirtualTime(timer.max()! + 1)
+      configuration.created = -2
+      configuration.subscribed = -1
+      configuration.cancelled = 1000
       self.configuration = configuration
    }
 

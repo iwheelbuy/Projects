@@ -11,6 +11,7 @@ public struct TestEvent<V>: Equatable where V: Equatable {
    }
 
    public init(case: TestCase<V>, time: VirtualTime) {
+      precondition(time <= 1000, "Время должно быть в промежутке [0 ... 999]")
       self.case = `case`
       self.time = Int(time.debugDescription)!
    }

@@ -9,36 +9,36 @@ import DependenciesTest
 final class CollectByCount: XCTestCase {
 
    func test_common_behavior() {
-      let storage = TestStorage(timer: timer)
+      let storage = TestStorage()
       let events: [TestEvent<String>] = [
-         .value("a", at: timer[0]),
-         .value("b", at: timer[1]),
-         .value("c", at: timer[2]),
-         .success(at: timer[3])
+         .value("a", at: 0),
+         .value("b", at: 1),
+         .value("c", at: 2),
+         .success(at: 3)
       ]
       let upstream = storage.publisher(events: events)
       let publisher = Publishers.CollectByCount(upstream: upstream, count: 2)
-      let completion = publisher.success(at: timer[3])
+      let completion = publisher.success(at: 3)
       storage.test(publisher, completion: completion) { results in
          XCTAssertEqual(results.values, [["a", "b"], ["c"]])
-         XCTAssertEqual(results.times, [timer[1], timer[3]])
+         XCTAssertEqual(results.times, [1, 3])
       }
    }
 
    func test_failure_behavior() {
-      let storage = TestStorage(timer: timer)
+      let storage = TestStorage()
       let events: [TestEvent<String>] = [
-         .value("a", at: timer[0]),
-         .value("b", at: timer[1]),
-         .value("c", at: timer[2]),
-         .failure(.default, at: timer[3])
+         .value("a", at: 0),
+         .value("b", at: 1),
+         .value("c", at: 2),
+         .failure(.default, at: 3)
       ]
       let upstream = storage.publisher(events: events)
       let publisher = Publishers.CollectByCount(upstream: upstream, count: 2)
-      let completion = publisher.failure(.default, at: timer[3])
+      let completion = publisher.failure(.default, at: 3)
       storage.test(publisher, completion: completion) { results in
          XCTAssertEqual(results.values, [["a", "b"]])
-         XCTAssertEqual(results.times, [timer[1]])
+         XCTAssertEqual(results.times, [1])
       }
    }
 }
