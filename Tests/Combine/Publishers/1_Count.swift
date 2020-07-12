@@ -9,7 +9,7 @@ final class Count: XCTestCase {
    func test_common_behavior() {
       let storage = TestStorage()
       let count = 20 + Int(arc4random_uniform(30))
-      let events = Array(0 ..< count)
+      let events: [TestEvent<Int>] = Array(0 ..< count)
          .enumerated()
          .map({ TestEvent.value($0.element, at: $0.offset) })
          .appending(.success(at: count))
@@ -38,7 +38,9 @@ final class Count: XCTestCase {
 
    func test_failury_behavior() {
       let storage = TestStorage()
-      let events = [TestEvent<Int>.failure(.default, at: 0)]
+      let events: [TestEvent<Int>] = [
+         .failure(.default, at: 0)
+      ]
       let upstream = storage.publisher(events: events)
       let publisher = Publishers.Count(upstream: upstream)
       let completion = publisher.failure(.default, at: 0)

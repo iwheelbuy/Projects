@@ -39,7 +39,7 @@ public class TestStorage {
    }
 
    public func test<P, V>(_ publisher: P, completion: TestEvent<V>? = nil, _ handler: ([TestResult<V>]) -> Void) where P: Publisher, P.Output == V {
-      let events = scheduler
+      let events: [TestEvent<V>] = scheduler
          .start(configuration: configuration, create: {
             return publisher
                .mapError({ error -> TestError in

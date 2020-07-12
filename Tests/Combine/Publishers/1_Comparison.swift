@@ -26,7 +26,9 @@ final class Comparison: XCTestCase {
 
    func test_empty_behavior() {
       let storage = TestStorage()
-      let events = [TestEvent<Int>.success(at: 0)]
+      let events: [TestEvent<Int>] = [
+         .success(at: 0)
+      ]
       let upstream = storage.publisher(events: events)
       let publisher = Publishers.Comparison(upstream: upstream, areInIncreasingOrder: { $0 > $1 })
       let completion = publisher.success(at: 0)
@@ -59,7 +61,7 @@ final class Comparison: XCTestCase {
       let values = Array(0 ..< count)
          .set
          .map({ _ in Int(arc4random_uniform(1000) ) })
-      let events = values
+      let events: [TestEvent<Int>] = values
          .enumerated()
          .map({ TestEvent.value($0.element, at: $0.offset) })
          .appending(.success(at: count))
@@ -78,7 +80,7 @@ final class Comparison: XCTestCase {
       let values = Array(0 ..< count)
          .set
          .map({ _ in Int(arc4random_uniform(1000) ) })
-      let events = values
+      let events: [TestEvent<Int>] = values
          .enumerated()
          .map({ TestEvent.value($0.element, at: $0.offset) })
          .appending(.success(at: count))
