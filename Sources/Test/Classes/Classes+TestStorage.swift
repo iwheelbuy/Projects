@@ -7,7 +7,7 @@ public class TestStorage {
 
    public var cancellables: Set<AnyCancellable> = Set()
    private let configuration: TestScheduler.Configuration
-   private let scheduler = TestScheduler(initialClock: -3)
+   public let scheduler = TestScheduler(initialClock: -3)
 
    public init() {
       var configuration = TestScheduler.Configuration.default
