@@ -12,6 +12,7 @@ final class CollectByTime: XCTestCase {
 
       private lazy var _interval: Int = {
          let interval = Int(Double(values.max()!) / Double(5 + arc4random_uniform(5)))
+         print("~~>", interval)
          return interval % 2 == 0 ? interval : interval + 1
       }()
       private(set) lazy var values = Array(0 ... 50)
@@ -36,8 +37,12 @@ final class CollectByTime: XCTestCase {
             .filter({ $0.isNotEmpty })
       }
 
-      init(microseconds: Int = 15) {
+      init(microseconds: Int = 1) {
          self.microseconds = microseconds
+      }
+
+      var intervalEntwine: VirtualTimeInterval {
+         return VirtualTimeInterval(_interval)
       }
 
       var interval: DispatchQueue.SchedulerTimeType.Stride {
@@ -53,6 +58,29 @@ final class CollectByTime: XCTestCase {
             return DispatchTime.now() + delay
          }
       }
+   }
+
+   func test_common_behavior_entwine() {
+      let input = Input()
+      let storage = TestStorage()
+      let events: [TestEvent<Int>] = input
+         .values
+         .enumerated()
+         .map({ time, value -> TestEvent<Int> in
+            return TestEvent(case: .value(value), time: time)
+         })
+      let upstream = storage.publisher(events: events)
+      let strategy = Publishers.TimeGroupingStrategy<TestScheduler>
+         .byTimeOrCount(storage.scheduler, input.intervalEntwine, input.count)
+      let publisher = Publishers.CollectByTime(
+         upstream: upstream,
+         strategy: strategy,
+         options: nil
+      )
+      storage.test(publisher) { results in
+         XCTAssertEqual(results.values, input.expected.map({ Array($0) }))
+      }
+      print(input)
    }
 
    func test_common_behavior() {
