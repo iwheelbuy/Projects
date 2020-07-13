@@ -12,11 +12,11 @@
       },
       {
         "package": "Entwine",
-        "repositoryURL": "git@github.com:iwheelbuy/Entwine.git",
+        "repositoryURL": "git@github.com:tcldr/Entwine.git",
         "state": {
-          "branch": "test-scheduler-intervals",
-          "revision": "06b1ec273a8d5dd4493202ecddf55f025d34bf32",
-          "version": null
+          "branch": null,
+          "revision": "0f8ccc0d5c5594e4a025346796dd61855a1f46d3",
+          "version": "0.9.0"
         }
       },
       {
