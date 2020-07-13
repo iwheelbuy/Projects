@@ -17,20 +17,23 @@ final class Contains: XCTestCase {
             .success(at: 2)
          ]
          let upstream = storage.publisher(events: events)
-         if index == 0 {
+         switch index {
+         case 0:
             let publisher = Publishers.Contains(upstream: upstream, output: "b")
             let completion = publisher.success(at: 1)
             storage.test(publisher, completion: completion) { results in
                XCTAssertEqual(results.values, [true])
                XCTAssertEqual(results.times, [1])
             }
-         } else {
+         case 1:
             let publisher = Publishers.Contains(upstream: upstream, output: "c")
             let completion = publisher.success(at: 2)
             storage.test(publisher, completion: completion) { results in
                XCTAssertEqual(results.values, [false])
                XCTAssertEqual(results.times, [2])
             }
+         default:
+            fatalError()
          }
       }
    }
