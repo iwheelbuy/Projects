@@ -1,9 +1,8 @@
 import DependenciesTest
 /*
- Применяется трансформация к каждому новому значению из upstream. Каждое
- значение трансформации публикуется если оно не nil.
+ Публикуются только те значения из upstream, которые успешно проходят фильтр.
  */
-final class CompactMap: XCTestCase {
+final class Filter: XCTestCase {
 
    func test_common_behavior() {
       let storage = TestStorage()
@@ -14,9 +13,7 @@ final class CompactMap: XCTestCase {
          .success(at: 3)
       ]
       let upstream = storage.publisher(events: events)
-      let publisher = Publishers.CompactMap(upstream: upstream) { string -> String? in
-         return string == "b" ? nil : string
-      }
+      let publisher = Publishers.Filter(upstream: upstream) { $0 != "b" }
       let completion = publisher.success(at: 3)
       storage.test(publisher, completion: completion) { results in
          XCTAssertEqual(results.values, ["a", "c"])
@@ -33,9 +30,7 @@ final class CompactMap: XCTestCase {
          .failure(.default, at: 3)
       ]
       let upstream = storage.publisher(events: events)
-      let publisher = Publishers.CompactMap(upstream: upstream) { string -> String? in
-         return string == "b" ? nil : string
-      }
+      let publisher = Publishers.Filter(upstream: upstream) { $0 != "b" }
       let completion = publisher.failure(.default, at: 3)
       storage.test(publisher, completion: completion) { results in
          XCTAssertEqual(results.values, ["a", "c"])
