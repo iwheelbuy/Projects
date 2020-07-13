@@ -1,7 +1,8 @@
 import DependenciesTest
 /*
  Этот оператор влияет на то, на каком потоке произойдет подписка самого первого
- в цепочке upstream потока. Если
+ в цепочке upstream потока. Учитывается только самый первый в цепочке
+ SubscribeOn, остальные игнорируются.
  */
 final class SubscribeOn: XCTestCase {
 
@@ -10,34 +11,34 @@ final class SubscribeOn: XCTestCase {
       let group = DispatchGroup()
       group.enter()
       group.enter()
-      var counter = 0
-      let scheduler0 = DispatchQueue(label: "scheduler0", qos: .userInteractive, attributes: .concurrent)
-      let scheduler1 = DispatchQueue(label: "scheduler1", qos: .userInteractive, attributes: .concurrent)
+      let scheduler0 = DispatchQueue.test(name: "a")
+      let scheduler1 = DispatchQueue.test(name: "b")
       let upstream = PassthroughSubject<Int, Never>()
       let publisher0 = Publishers.SubscribeOn(upstream: upstream, scheduler: scheduler0, options: nil)
       let publisher1 = Publishers.SubscribeOn(upstream: publisher0, scheduler: scheduler1, options: nil)
+      publisher0
+         .handleEvents(receiveSubscription: { _ in
+            XCTAssertTrue(scheduler0.isCurrent)
+         }, receiveOutput: { _ in
+            XCTAssertFalse(scheduler0.isCurrent)
+            XCTAssertFalse(scheduler1.isCurrent)
+            group.leave()
+         })
+         .subscribe()
+         .store(in: &cancellables)
       publisher1
          .handleEvents(receiveSubscription: { _ in
-            XCTAssertEqual(Thread.name, "scheduler0")
+            XCTAssertTrue(scheduler0.isCurrent)
          }, receiveOutput: { _ in
-            XCTAssertNotEqual(Thread.name, "scheduler0")
-            counter += 1
+            XCTAssertFalse(scheduler0.isCurrent)
+            XCTAssertFalse(scheduler1.isCurrent)
             group.leave()
          })
-         .sink(receiveValue: { _ in })
+         .subscribe()
          .store(in: &cancellables)
-      upstream
-         .handleEvents(receiveSubscription: { _ in
-            XCTAssertNotEqual(Thread.name, "scheduler0")
-         }, receiveOutput: { _ in
-            XCTAssertNotEqual(Thread.name, "scheduler0")
-            counter += 1
-            group.leave()
-         })
-         .sink(receiveValue: { _ in })
-         .store(in: &cancellables)
-      upstream.send(0)
+      DispatchQueue.test(name: "c").asyncAfter(deadline: .now() + 0.1) {
+         upstream.send(0)
+      }
       group.wait()
-      XCTAssertEqual(counter, 2)
    }
 }

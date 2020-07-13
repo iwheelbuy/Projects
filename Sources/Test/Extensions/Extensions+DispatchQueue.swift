@@ -7,14 +7,10 @@ public extension DispatchQueue {
    }
 
    var isCurrent: Bool {
-      let name = label.components(separatedBy: "~name~").last!
-      return Thread.current.name?.contains("~name~\(name)") ?? false
-   }
-}
-
-public extension Thread {
-
-   var name: String? {
-      return String(cString: __dispatch_queue_get_label(nil), encoding: .utf8)
+      let components = label.components(separatedBy: "~name~")
+      guard components.count == 2, let name = components.last else {
+         return false
+      }
+      return Thread.current.label.contains("~name~\(name)")
    }
 }

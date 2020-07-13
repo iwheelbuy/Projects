@@ -1,6 +1,8 @@
 import DependenciesTest
 /*
-
+ Публикуется последнее полученное из upstream значение при условии, что с
+ момента его публикации прошло время равное dueTime и новых значений
+ опубликовано не было.
  */
 final class Debounce: XCTestCase {
 
