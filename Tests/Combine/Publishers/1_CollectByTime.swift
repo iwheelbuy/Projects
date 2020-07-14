@@ -22,16 +22,16 @@ final class CollectByTime: XCTestCase {
       let count = Int(2 + arc4random_uniform(4))
       let microseconds: Int
 
-      var expected: [ArraySlice<Int>] {
+      var expected: [[Int]] {
          return Array(0 ... values.max()! / _interval)
             .map({ value -> ClosedRange<Int> in
                return value * _interval ... (value + 1) * _interval
             })
-            .flatMap({ range -> [ArraySlice<Int>] in
-               let size = count
+            .flatMap({ range -> [[Int]] in
                return values
                   .filter({ range.contains($0) })
-                  .slices(size: size)
+                  .slices(size: count)
+                  .map({ Array($0) })
             })
             .filter({ $0.isNotEmpty })
       }
@@ -53,6 +53,10 @@ final class CollectByTime: XCTestCase {
             return DispatchTime.now() + delay
          }
       }
+   }
+
+   func test() {
+
    }
 
    func test_common_behavior() {
@@ -91,5 +95,76 @@ final class CollectByTime: XCTestCase {
          }
          XCTAssertTrue(equal)
       }
+   }
+
+   func testContro9lCollectByTimeSequence() {
+      let interval = 12
+      let count = 5
+      let expected = [
+         [1, 5, 7, 11],
+         [13],
+         [27, 35],
+         [43],
+         [51, 53, 55],
+         [61, 67, 69],
+         [73, 77, 79, 83],
+         [87, 89, 91, 93, 95],
+      ]
+      let sut = DispatchQueue(label: "serial-queue")
+      let subject = PassthroughSubject<Int, Never>()
+      let strategy = Publishers.TimeGroupingStrategy<DispatchQueue>
+         .byTimeOrCount(sut, .init(.milliseconds(interval)), count)
+      let publisher = Publishers.CollectByTime(upstream: subject, strategy: strategy, options: nil)
+      var cancellables = Set<AnyCancellable>()
+      var results = [[Int]]()
+
+      publisher.sink(receiveValue: { results.append($0) }).store(in: &cancellables)
+
+      let testIntervals = expected.flatMap { $0 }
+
+      let now = DispatchTime.now()
+      let group = DispatchGroup()
+      group.enter()
+      sut.schedule(after: .init(now + .milliseconds(1000))) { group.leave() }
+      for interval in testIntervals {
+         sut.schedule(after: .init(now + .milliseconds(interval))) { subject.send(interval) }
+      }
+      _ = group.wait(timeout: now + .milliseconds(2000))
+
+      XCTAssertEqual(expected, results)
+   }
+
+   func testCollectByTimeSequence() {
+      let interval = 12
+      let count = 5
+      let expected = [
+         [1, 5, 7, 11],
+         [13],
+         [27, 35],
+         [43],
+         [51, 53, 55],
+         [61, 67, 69],
+         [73, 77, 79, 83],
+         [87, 89, 91, 93, 95],
+      ]
+
+      let sut = TestScheduler(initialClock: 0, maxClock: 2000)
+      let strategy = Publishers.TimeGroupingStrategy<TestScheduler>
+         .byTimeOrCount(sut, .init(interval), count)
+      let subject = PassthroughSubject<Int, Never>()
+      let publisher = Publishers.CollectByTime(upstream: subject, strategy: strategy, options: nil)
+      var cancellables = Set<AnyCancellable>()
+      var results = [[Int]]()
+
+      publisher.sink(receiveValue: { results.append($0) }).store(in: &cancellables)
+
+      let testIntervals = expected.flatMap { $0 }
+
+      for interval in testIntervals {
+         sut.schedule(after: .init(interval)) { subject.send(interval) }
+      }
+      sut.resume()
+
+      XCTAssertEqual(expected, results)
    }
 }
