@@ -3,8 +3,6 @@ import Entwine
 import EntwineTest
 import XCTest
 
-public typealias TestHandler<V> = ([TestResult<V>]) -> Void where V: Equatable
-
 public class TestStorage {
 
    public var cancellables: Set<AnyCancellable> = Set()
