@@ -3,6 +3,8 @@ import Entwine
 import EntwineTest
 import XCTest
 
+public typealias TestHandler<V> = ([TestResult<V>]) -> Void where V: Equatable
+
 public class TestStorage {
 
    public var cancellables: Set<AnyCancellable> = Set()
@@ -11,13 +13,13 @@ public class TestStorage {
 
    public init() {
       var configuration = TestScheduler.Configuration.default
-      configuration.created = -2
-      configuration.subscribed = -1
+      configuration.created = -1
+      configuration.subscribed = 0
       configuration.cancelled = 1000
       self.configuration = configuration
    }
 
-   public func publisher<V>(events: [TestEvent<V>]) -> AnyPublisher<V, TestError> {
+   public func publisher<V>(absolute: Bool = true, events: [TestEvent<V>]) -> AnyPublisher<V, TestError> {
       let elements = events
          .map({ event -> (VirtualTime, Entwine.Signal<V, TestError>) in
             let signal: Entwine.Signal<V, TestError>
@@ -35,10 +37,15 @@ public class TestStorage {
             return (time, signal)
          })
       let sequence = TestSequence<V, TestError>(elements)
-      return scheduler.createAbsoluteTestablePublisher(sequence).eraseToAnyPublisher()
+      switch absolute {
+      case false:
+         return scheduler.createRelativeTestablePublisher(sequence).eraseToAnyPublisher()
+      case true:
+         return scheduler.createAbsoluteTestablePublisher(sequence).eraseToAnyPublisher()
+      }
    }
 
-   public func test<P, V>(_ publisher: P, completion: TestEvent<V>? = nil, _ handler: ([TestResult<V>]) -> Void) where P: Publisher, P.Output == V {
+   public func test<P, V>(_ publisher: P, completion: TestEvent<V>? = nil, _ handler: TestHandler<V>? = nil) where P: Publisher, P.Output == V {
       let events: [TestEvent<V>] = scheduler
          .start(configuration: configuration, create: {
             return publisher
@@ -65,6 +72,6 @@ public class TestStorage {
             let time = event.time
             return TestResult<V>(time: time, value: value)
          })
-      handler(results)
+      handler?(results)
    }
 }

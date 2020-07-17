@@ -18,7 +18,8 @@ let package = Package(
    ],
    dependencies: [
       .package(url: "git@github.com:sergdort/CombineFeedback.git", from: "0.7.0"),
-      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.1")
+      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.1"),
+      .package(url: "git@github.com:mattgallagher/CwlPreconditionTesting.git", from: "2.0.0")
    ],
    targets: [
       .catcher,
@@ -102,6 +103,7 @@ extension PackageDescription.Target {
       return PackageDescription.Target.target(
          name: "Test",
          dependencies: [
+            "CwlPreconditionTesting",
             .product(name: "EntwineTest", package: "Entwine")
          ],
          path: "Sources/Test"
