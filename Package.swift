@@ -18,8 +18,7 @@ let package = Package(
    ],
    dependencies: [
       .package(url: "git@github.com:sergdort/CombineFeedback.git", from: "0.7.0"),
-//      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.0"),
-      .package(url: "git@github.com:tcldr/Entwine.git", .branch("test-scheduler-intervals")),
+      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.1")
    ],
    targets: [
       .catcher,

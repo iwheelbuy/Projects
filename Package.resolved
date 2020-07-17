@@ -14,9 +14,9 @@
         "package": "Entwine",
         "repositoryURL": "git@github.com:tcldr/Entwine.git",
         "state": {
-          "branch": "test-scheduler-intervals",
-          "revision": "d98c6c1a1c42a83118fbb6455e0817b71b7a6e78",
-          "version": null
+          "branch": null,
+          "revision": "cd90cfb2510c35ba082d9c7a8910bdacc6fa840f",
+          "version": "0.9.1"
         }
       },
       {
