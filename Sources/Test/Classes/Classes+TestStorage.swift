@@ -44,7 +44,7 @@ public class TestStorage {
    }
 
    public func test<P, V>(_ publisher: P, completion: TestEvent<V>? = nil, _ handler: TestHandler<V>? = nil) where P: Publisher, P.Output == V {
-      let events: [TestEvent<V>] = scheduler
+      let subscriber = scheduler
          .start(configuration: configuration, create: {
             return publisher
                .mapError({ error -> TestError in
@@ -55,7 +55,7 @@ public class TestStorage {
                   }
                })
          })
-         .events
+      let events: [TestEvent<V>] = subscriber.events
       XCTAssertTrue(events.first?.case.isSubscription ?? false)
       if let completion = completion {
          XCTAssertEqual(events.last, completion)
