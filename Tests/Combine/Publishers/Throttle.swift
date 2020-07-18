@@ -11,16 +11,23 @@ import DependenciesTest
 final class Throttle: XCTestCase {
 
    func test_common_behavior() {
-      DispatchQueue.concurrentPerform(iterations: 1000) { _ in
-         let handler = TestHandler()
-         let values = Array(0 ... 50)
-            .map({ _ in Int(1 + arc4random_uniform(100)) })
-            .set
-            .sorted()
-         let interval: Int = {
-            let interval = Int(Double(values.max()!) / Double(5 + arc4random_uniform(5)))
-            return interval % 2 == 0 ? interval : interval + 1
-         }()
+      /// Время когда стоит закончить upstream
+      func makeCompletionTime(interval: Int, values: [Int]) -> Int {
+         return interval + values.max()!
+      }
+      /// События для публикации на базе исходные значений
+      func makeEvents(completionTime: Int, values: [Int]) -> [TestEvent<Int>] {
+         let events: [TestEvent<Int>] = values
+            .map({ TestEvent(case: .value($0), time: $0) })
+            .appending(.success(at: completionTime))
+         return events
+      }
+      /// Интервал, которые учитывает исходные значения
+      func makeInterval(values: [Int]) -> Int {
+         return Int(Double(values.max()!) / Double(3 + arc4random_uniform(5)))
+      }
+      /// Предполагаемые интервалы на базе исходные значений
+      func makeRanges(interval: Int, values: [Int]) -> [[Int]] {
          var time = values[0]
          var ranges: [[Int]] = [[values[0]]]
          while true {
@@ -43,10 +50,23 @@ final class Throttle: XCTestCase {
                }
             }
          }
-         let max = values.max()!
-         let events: [TestEvent<Int>] = values
-            .map({ TestEvent(case: .value($0), time: $0) })
-            .appending(.success(at: max + interval))
+         return ranges
+      }
+      /// Исходные значения. Каждое значение обозначает еще и время, когда его следует опубликовать
+      func makeValues() -> [Int] {
+         return Array(0 ... 50)
+            .map({ _ in Int(1 + arc4random_uniform(100)) })
+            .set
+            .sorted()
+      }
+
+      DispatchQueue.concurrentPerform(iterations: 1000) { _ in
+         let handler = TestHandler()
+         let values = makeValues()
+         let interval = makeInterval(values: values)
+         let completionTime = makeCompletionTime(interval: interval, values: values)
+         let ranges = makeRanges(interval: interval, values: values)
+         let events = makeEvents(completionTime: completionTime, values: values)
          let latest = arc4random() % 2 == 0
          let upstream = handler.publisher(events: events)
          let publisher = Publishers.Throttle(
@@ -55,7 +75,7 @@ final class Throttle: XCTestCase {
             scheduler: handler.scheduler,
             latest: latest
          )
-         let completion = publisher.success(at: max + interval)
+         let completion = publisher.success(at: completionTime)
          let results = handler.test(publisher, completion: completion)
          ranges
             .enumerated()
