@@ -1,3 +1,3 @@
-import Foundation
+import Combine
 
-//public typealias TestHandler<V> = ([TestResult<V>]) -> Void where V: Equatable
+public typealias TestPublisher<V> = AnyPublisher<V, TestError>

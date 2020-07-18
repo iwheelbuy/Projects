@@ -17,7 +17,7 @@ public class TestHandler {
       self.configuration = configuration
    }
 
-   public func publisher<V>(absolute: Bool = true, events: [TestEvent<V>]) -> AnyPublisher<V, TestError> {
+   public func publisher<V>(absolute: Bool = true, events: [TestEvent<V>]) -> TestPublisher<V> {
       let elements = events
          .map({ event -> (VirtualTime, Entwine.Signal<V, TestError>) in
             let signal: Entwine.Signal<V, TestError>
