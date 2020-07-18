@@ -7,7 +7,7 @@ import DependenciesTest
 final class Catch: XCTestCase {
 
    func test_common_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events0: [TestEvent<String>] = [
          .failure(.default, at: 0)
       ]
@@ -15,31 +15,29 @@ final class Catch: XCTestCase {
          .value("a", at: 1),
          .success(at: 2)
       ]
-      let upstream0 = storage.publisher(events: events0)
-      let upstream1 = storage.publisher(events: events1)
+      let upstream0 = handler.publisher(events: events0)
+      let upstream1 = handler.publisher(events: events1)
       let publisher = Publishers.Catch(upstream: upstream0, handler: { _ in upstream1 })
       let completion = publisher.success(at: 2)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, ["a"])
-         XCTAssertEqual(results.times, [1])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, ["a"])
+      XCTAssertEqual(results.times, [1])
    }
 
    func test_failure_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events0: [TestEvent<String>] = [
          .failure(.default, at: 0)
       ]
       let events1: [TestEvent<String>] = [
          .failure(.thrown, at: 1)
       ]
-      let upstream0 = storage.publisher(events: events0)
-      let upstream1 = storage.publisher(events: events1)
+      let upstream0 = handler.publisher(events: events0)
+      let upstream1 = handler.publisher(events: events1)
       let publisher = Publishers.Catch(upstream: upstream0, handler: { _ in upstream1 })
       let completion = publisher.failure(.thrown, at: 1)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, [])
-         XCTAssertEqual(results.times, [])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, [])
+      XCTAssertEqual(results.times, [])
    }
 }

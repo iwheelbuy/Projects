@@ -3,7 +3,7 @@ import Entwine
 import EntwineTest
 import XCTest
 
-public class TestStorage {
+public class TestHandler {
 
    public var cancellables: Set<AnyCancellable> = Set()
    private let configuration: TestScheduler.Configuration
@@ -42,8 +42,8 @@ public class TestStorage {
          return scheduler.createAbsoluteTestablePublisher(sequence).eraseToAnyPublisher()
       }
    }
-
-   public func test<P, V>(_ publisher: P, completion: TestEvent<V>? = nil, _ handler: TestHandler<V>? = nil) where P: Publisher, P.Output == V {
+   @discardableResult
+   public func test<P, V>(_ publisher: P, completion: TestEvent<V>? = nil) -> [TestResult<V>] where P: Publisher, P.Output == V {
       let subscriber = scheduler
          .start(configuration: configuration, create: {
             return publisher
@@ -70,6 +70,6 @@ public class TestStorage {
             let time = event.time
             return TestResult<V>(time: time, value: value)
          })
-      handler?(results)
+      return results
    }
 }

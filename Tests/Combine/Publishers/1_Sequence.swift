@@ -6,10 +6,9 @@ import DependenciesTest
 final class Sequence: XCTestCase {
 
    func test_common_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let publisher = Publishers.Sequence<[Int], TestError>(sequence: [0, 1, 2])
-      storage.test(publisher) { results in
-         XCTAssertEqual(results.values, [0, 1, 2])
-      }
+      let results = handler.test(publisher)
+      XCTAssertEqual(results.values, [0, 1, 2])
    }
 }

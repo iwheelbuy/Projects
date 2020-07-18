@@ -6,17 +6,16 @@ import DependenciesTest
 final class Retry: XCTestCase {
 
    func test_common_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events: [TestEvent<String>] = [
          .value("a", at: 0),
          .failure(.default, at: 1)
       ]
-      let upstream = storage.publisher(absolute: false, events: events)
+      let upstream = handler.publisher(absolute: false, events: events)
       let publisher = Publishers.Retry(upstream: upstream, retries: 2)
       let completion = publisher.failure(.default, at: 3)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, ["a", "a", "a"])
-         XCTAssertEqual(results.times, [0, 1, 2])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, ["a", "a", "a"])
+      XCTAssertEqual(results.times, [0, 1, 2])
    }
 }

@@ -8,55 +8,52 @@ import DependenciesTest
 final class Comparison: XCTestCase {
 
    func test_common_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events: [TestEvent<String>] = [
          .value("a", at: 0),
          .value("c", at: 1),
          .value("b", at: 2),
          .success(at: 3)
       ]
-      let upstream = storage.publisher(events: events)
+      let upstream = handler.publisher(events: events)
       let publisher = Publishers.Comparison(upstream: upstream, areInIncreasingOrder: { $0 > $1 })
       let completion = publisher.success(at: 3)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, ["c"])
-         XCTAssertEqual(results.times, [3])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, ["c"])
+      XCTAssertEqual(results.times, [3])
    }
 
    func test_empty_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events: [TestEvent<Int>] = [
          .success(at: 0)
       ]
-      let upstream = storage.publisher(events: events)
+      let upstream = handler.publisher(events: events)
       let publisher = Publishers.Comparison(upstream: upstream, areInIncreasingOrder: { $0 > $1 })
       let completion = publisher.success(at: 0)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, [])
-         XCTAssertEqual(results.times, [])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, [])
+      XCTAssertEqual(results.times, [])
    }
 
    func test_failure_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events: [TestEvent<String>] = [
          .value("a", at: 0),
          .value("c", at: 1),
          .value("b", at: 2),
          .failure(.default, at: 3)
       ]
-      let upstream = storage.publisher(events: events)
+      let upstream = handler.publisher(events: events)
       let publisher = Publishers.Comparison(upstream: upstream, areInIncreasingOrder: { $0 > $1 })
       let completion = publisher.failure(.default, at: 3)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, [])
-         XCTAssertEqual(results.times, [])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, [])
+      XCTAssertEqual(results.times, [])
    }
 
    func test_max_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let count = 50
       let values = Array(0 ..< count)
          .set
@@ -65,17 +62,16 @@ final class Comparison: XCTestCase {
          .enumerated()
          .map({ TestEvent.value($0.element, at: $0.offset) })
          .appending(.success(at: count))
-      let upstream = storage.publisher(events: events)
+      let upstream = handler.publisher(events: events)
       let publisher = Publishers.Comparison.max(upstream: upstream)
       let completion = publisher.success(at: count)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, [values.max()!])
-         XCTAssertEqual(results.times, [count])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, [values.max()!])
+      XCTAssertEqual(results.times, [count])
    }
 
    func test_min_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let count = 50
       let values = Array(0 ..< count)
          .set
@@ -84,12 +80,11 @@ final class Comparison: XCTestCase {
          .enumerated()
          .map({ TestEvent.value($0.element, at: $0.offset) })
          .appending(.success(at: count))
-      let upstream = storage.publisher(events: events)
+      let upstream = handler.publisher(events: events)
       let publisher = Publishers.Comparison.min(upstream: upstream)
       let completion = publisher.success(at: count)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, [values.min()!])
-         XCTAssertEqual(results.times, [count])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, [values.min()!])
+      XCTAssertEqual(results.times, [count])
    }
 }

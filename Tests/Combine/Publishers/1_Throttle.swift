@@ -12,11 +12,10 @@ final class Throttle: XCTestCase {
 
    func test_common_behavior() {
       DispatchQueue.concurrentPerform(iterations: 1000) { _ in
-         let storage = TestStorage()
+         let handler = TestHandler()
          let values = Array(0 ... 50)
             .map({ _ in Int(1 + arc4random_uniform(100)) })
             .set
-            .filter({ $0 % 2 != 0 })
             .sorted()
          let interval: Int = {
             let interval = Int(Double(values.max()!) / Double(5 + arc4random_uniform(5)))
@@ -49,25 +48,24 @@ final class Throttle: XCTestCase {
             .map({ TestEvent(case: .value($0), time: $0) })
             .appending(.success(at: max + interval))
          let latest = arc4random() % 2 == 0
-         let upstream = storage.publisher(events: events)
+         let upstream = handler.publisher(events: events)
          let publisher = Publishers.Throttle(
             upstream: upstream,
             interval: VirtualTimeInterval(interval),
-            scheduler: storage.scheduler,
+            scheduler: handler.scheduler,
             latest: latest
          )
          let completion = publisher.success(at: max + interval)
-         storage.test(publisher, completion: completion) { results in
-            ranges
-               .enumerated()
-               .forEach({ index, range in
-                  if latest {
-                     XCTAssertEqual(range.last, results.values[index])
-                  } else {
-                     XCTAssertTrue(range.contains(results.values[index]))
-                  }
-               })
-         }
+         let results = handler.test(publisher, completion: completion)
+         ranges
+            .enumerated()
+            .forEach({ index, range in
+               if latest {
+                  XCTAssertEqual(range.last, results.values[index])
+               } else {
+                  XCTAssertTrue(range.contains(results.values[index]))
+               }
+            })
       }
    }
 }

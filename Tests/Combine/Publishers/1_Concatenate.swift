@@ -6,7 +6,7 @@ import DependenciesTest
 final class Concatenate: XCTestCase {
 
    func test_common_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events0: [TestEvent<String>] = [
          .value("a", at: 0),
          .value("b", at: 2),
@@ -18,18 +18,17 @@ final class Concatenate: XCTestCase {
          .value("e", at: 5),
          .success(at: 7)
       ]
-      let upstream0 = storage.publisher(events: events0)
-      let upstream1 = storage.publisher(events: events1)
+      let upstream0 = handler.publisher(events: events0)
+      let upstream1 = handler.publisher(events: events1)
       let publisher = Publishers.Concatenate(prefix: upstream0, suffix: upstream1)
       let completion = publisher.success(at: 7)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, ["a", "b", "e"])
-         XCTAssertEqual(results.times, [0, 2, 5])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, ["a", "b", "e"])
+      XCTAssertEqual(results.times, [0, 2, 5])
    }
 
    func test_failure_behavior() {
-      let storage = TestStorage()
+      let handler = TestHandler()
       let events0: [TestEvent<String>] = [
          .value("a", at: 0),
          .value("b", at: 2),
@@ -41,13 +40,12 @@ final class Concatenate: XCTestCase {
          .value("e", at: 5),
          .success(at: 7)
       ]
-      let upstream0 = storage.publisher(events: events0)
-      let upstream1 = storage.publisher(events: events1)
+      let upstream0 = handler.publisher(events: events0)
+      let upstream1 = handler.publisher(events: events1)
       let publisher = Publishers.Concatenate(prefix: upstream0, suffix: upstream1)
       let completion = publisher.failure(.default, at: 4)
-      storage.test(publisher, completion: completion) { results in
-         XCTAssertEqual(results.values, ["a", "b"])
-         XCTAssertEqual(results.times, [0, 2])
-      }
+      let results = handler.test(publisher, completion: completion)
+      XCTAssertEqual(results.values, ["a", "b"])
+      XCTAssertEqual(results.times, [0, 2])
    }
 }
