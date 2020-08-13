@@ -97,7 +97,14 @@ extension Textus {
                             let length = engine.manager.characterIndexForGlyph(at: range.last) + 1
                             return textus.prefix(length)
                         }()
-                        let text = Textus.Crop(full: full, lines: lines, original: original, size: size, truncated: truncated, width: width)
+                        let text = Textus.Crop(
+                           full: full,
+                           lines: lines,
+                           original: original,
+                           size: size,
+                           truncated: truncated,
+                           width: width
+                        )
                         Textus.Crop.cache[key] = text
                         return text
                     }

@@ -44,7 +44,6 @@ extension Textus {
       let manager: NSLayoutManager
       let storage: NSTextStorage
 
-      @PW_Box
       private var values = [Textus.Limit: (ranges: [NSRange], size: CGSize)]()
 
       init(textus: TextusRepresentable, width: CGFloat) {
