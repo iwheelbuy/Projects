@@ -10,73 +10,64 @@ import DependenciesTest
  */
 final class Throttle: XCTestCase {
 
-   func test_common_behavior() {
-      /// Время когда стоит закончить upstream
-      func makeCompletionTime(interval: Int, values: [Int]) -> Int {
-         return interval + values.max()!
+   func getRanges(interval: Int, values: [Int]) -> [ArraySlice<Int>] {
+      if values.isEmpty {
+         return []
       }
-      /// События для публикации на базе исходные значений
-      func makeEvents(completionTime: Int, values: [Int]) -> [TestEvent<Int>] {
-         let events: [TestEvent<Int>] = values
-            .map({ TestEvent(case: .value($0), time: $0) })
-            .appending(.success(at: completionTime))
-         return events
-      }
-      /// Интервал, которые учитывает исходные значения
-      func makeInterval(values: [Int]) -> Int {
-         return Int(Double(values.max()!) / Double(3 + arc4random_uniform(5)))
-      }
-      /// Предполагаемые интервалы на базе исходные значений
-      func makeRanges(interval: Int, values: [Int]) -> [[Int]] {
-         var time = values[0]
-         var ranges: [[Int]] = [[values[0]]]
-         while true {
-            let times = values.filter({ $0 > time && $0 <= time + interval })
-            if times.isEmpty {
-               if let next = values.first(where: { $0 > time }) {
-                  ranges.append([next])
-                  time = next
-               } else {
-                  break
-               }
+      let values = values.sorted()
+      var ranges: [ArraySlice<Int>] = [[values[0]]]
+      var time = values[0]
+      while true {
+         let times = values
+            .prefix(while: { $0 <= time + interval })
+            .drop(while: { $0 <= time })
+         if times.isNotEmpty {
+            if times.first == time + interval {
+               ranges.append([times.first!])
+               time = times.first!
             } else {
-               if times[0] == time + interval {
-                  ranges.append([times[0]])
-                  time = times[0]
-               } else {
-                  let range = values.filter({ $0 >= times[0] && $0 <= times[0] + interval })
-                  ranges.append(range)
-                  time = times[0] + interval
-               }
+               let range = values
+                  .prefix(while: { $0 <= times.first! + interval })
+                  .drop(while: { $0 < times.first! })
+               ranges.append(range)
+               time = times.first! + interval
             }
+         } else if let next = values.first(where: { $0 > time }) {
+            ranges.append([next])
+            time = next
+         } else {
+            break
          }
-         return ranges
       }
-      /// Исходные значения. Каждое значение обозначает еще и время, когда его следует опубликовать
-      func makeValues() -> [Int] {
-         return Array(0 ... 50)
-            .map({ _ in Int(1 + arc4random_uniform(100)) })
-            .set
-            .sorted()
-      }
+      return ranges
+   }
 
-      DispatchQueue.concurrentPerform(iterations: 1000) { _ in
-         let handler = TestHandler()
-         let values = makeValues()
-         let interval = makeInterval(values: values)
-         let completionTime = makeCompletionTime(interval: interval, values: values)
-         let ranges = makeRanges(interval: interval, values: values)
-         let events = makeEvents(completionTime: completionTime, values: values)
+   func getResults(interval: Int, latest: Bool, values: [Int]) -> [TestResult<Int>] {
+      let handler = TestHandler()
+      let completionTime = values.max()! + interval + 1
+      let events: [TestEvent<Int>] = values
+         .map({ TestEvent(case: .value($0), time: $0) })
+         .appending(.success(at: completionTime))
+      let upstream = handler.publisher(events: events)
+      let publisher = Publishers.Throttle(
+         upstream: upstream,
+         interval: VirtualTimeInterval(interval),
+         scheduler: handler.scheduler,
+         latest: latest
+      )
+      let completion = publisher.success(at: completionTime)
+      return handler.test(publisher, completion: completion)
+   }
+
+   func test_random_behavior() {
+      DispatchQueue.concurrentPerform(iterations: 10000) { _ in
+         let values = Array(0 ... 20)
+            .map({ _ in Int(1 + arc4random_uniform(40)) })
+            .sorted()
+         let interval = 1 + Int(arc4random()) % values.max()! * 2
+         let ranges = getRanges(interval: interval, values: values)
          let latest = arc4random() % 2 == 0
-         let upstream = handler.publisher(events: events)
-         let publisher = Publishers.Throttle(
-            upstream: upstream,
-            interval: VirtualTimeInterval(interval),
-            scheduler: handler.scheduler,
-            latest: latest
-         )
-         let completion = publisher.success(at: completionTime)
-         let results = handler.test(publisher, completion: completion)
+         let results = getResults(interval: interval, latest: latest, values: values)
          ranges
             .enumerated()
             .forEach({ index, range in

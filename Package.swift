@@ -28,7 +28,8 @@ let package = Package(
       .dependenciesCore,
       .dependenciesTest,
       .test,
-      .combineTests
+      .combineTests,
+      .generalTests
    ]
 )
 
@@ -99,6 +100,15 @@ extension PackageDescription.Target {
       )
    }
 
+   static var textus: PackageDescription.Target {
+      return PackageDescription.Target.target(
+         name: "Textus",
+         dependencies: [
+         ],
+         path: "Sources/Textus"
+      )
+   }
+
    static var test: PackageDescription.Target {
       return PackageDescription.Target.target(
          name: "Test",
@@ -117,6 +127,16 @@ extension PackageDescription.Target {
             "DependenciesTest"
          ],
          path: "Tests/Combine"
+      )
+   }
+
+   static var generalTests: PackageDescription.Target {
+      return PackageDescription.Target.testTarget(
+         name: "GeneralTests",
+         dependencies: [
+            "DependenciesTest"
+         ],
+         path: "Tests/General"
       )
    }
 }
