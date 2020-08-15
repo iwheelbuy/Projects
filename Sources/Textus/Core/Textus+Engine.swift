@@ -38,7 +38,7 @@ extension Textus {
          }
       }
 
-      private static let cache = Common.Cache<Textus.Engine.Key, Textus.Engine>(countLimit: 5000)
+      private static let cache = Cache<Textus.Engine.Key, Textus.Engine>(countLimit: 5000)
 
       let container: NSTextContainer
       let manager: NSLayoutManager
