@@ -30,7 +30,8 @@ let package = Package(
       .dependenciesTest,
       .test,
       .combineTests,
-      .generalTests
+      .generalTests,
+      .textus
    ]
 )
 
