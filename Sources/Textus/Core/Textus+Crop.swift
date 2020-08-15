@@ -1,3 +1,4 @@
+import Core
 import UIKit
 
 extension Textus {
@@ -14,7 +15,7 @@ extension Textus {
         public static let height: CGFloat = 10000
         public static let lines: Int = 1000
 
-        private static let cache = Common.Cache<Textus.Crop.Key, Textus.Crop>(countLimit: 5000)
+        private static let cache = Cache<Textus.Crop.Key, Textus.Crop>(countLimit: 5000)
         private static let groupAsync = DispatchGroup()
         private static let groupSync = DispatchGroup()
         private static let queue: OperationQueue = {

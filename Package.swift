@@ -68,8 +68,7 @@ extension PackageDescription.Target {
       return PackageDescription.Target.target(
          name: "Core",
          dependencies: [
-            "Catcher",
-            "Textus"
+            "Catcher"
          ],
          path: "Sources/Core"
       )
@@ -107,6 +106,7 @@ extension PackageDescription.Target {
       return PackageDescription.Target.target(
          name: "Textus",
          dependencies: [
+            "Core"
          ],
          path: "Sources/Textus"
       )
