@@ -1,3 +1,4 @@
+import Core
 import UIKit
 
 extension Textus {
