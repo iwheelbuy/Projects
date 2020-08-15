@@ -79,7 +79,8 @@ extension PackageDescription.Target {
          name: "DependenciesCore",
          dependencies: [
             "Core",
-            "Catcher"
+            "Catcher",
+            "Textus"
          ],
          path: "Sources/Dependencies",
          sources: [
