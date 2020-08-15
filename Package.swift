@@ -7,6 +7,7 @@ let package = Package(
    name: "Dependencies",
    platforms: [
       .iOS(.v13),
+      .tvOS(.v13)
    ],
    products: [
       .library(
