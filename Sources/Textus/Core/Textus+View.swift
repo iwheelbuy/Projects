@@ -169,7 +169,9 @@ extension Textus {
 
       private func makeViewText() -> UITextView {
          let view = UITextView(frame: .zero)
+         #if os(iOS)
          view.isEditable = false
+         #endif
          view.isOpaque = true
          view.isUserInteractionEnabled = false
          view.layer.zPosition = 1
@@ -209,6 +211,13 @@ extension Textus.View {
 
       let part: Textus.Part
       let frames: [CGRect]
+
+      func hash(into hasher: inout Hasher) {
+         hasher.combine(frames.first?.origin.x)
+         hasher.combine(frames.first?.origin.y)
+         hasher.combine(frames.first?.size.height)
+         hasher.combine(frames.first?.size.width)
+      }
    }
 }
 
