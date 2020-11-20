@@ -22,6 +22,7 @@ let package = Package(
          from: "0.7.0"
       ),
       .package(
+         name: "Entwine",
          url: "git@github.com:tcldr/Entwine.git",
          from: "0.9.1"
       ),
@@ -30,6 +31,7 @@ let package = Package(
          from: "2.0.0"
       ),
       .package(
+         name: "Firebase",
          url: "https://github.com/firebase/firebase-ios-sdk.git",
          from: "7.1.0"
       )
@@ -92,7 +94,12 @@ extension PackageDescription.Target {
          dependencies: [
             "Core",
             "Catcher",
-            "Textus"
+            "Textus",
+            .product(name: "FirebaseAuth", package: "Firebase"),
+//            .product(name: "FirebaseCore", package: "Firebase"),
+            .product(name: "FirebaseCrashlytics", package: "Firebase"),
+            .product(name: "FirebaseFirestore", package: "Firebase"),
+//            .product(name: "FirebaseFirestoreSwift", package: "Firebase"),
          ],
          path: "Sources/Dependencies",
          sources: [
