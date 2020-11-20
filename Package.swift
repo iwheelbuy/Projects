@@ -13,7 +13,7 @@ let package = Package(
          name: "OhWhatAnApp",
          targets: [
             "Dependencies",
-            "DependenciesTest"
+//            "DependenciesTest"
          ]
       )
    ],
