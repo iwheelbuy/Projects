@@ -91,7 +91,7 @@ extension PackageDescription.Target {
 
    static var dependenciesCore: PackageDescription.Target {
       return PackageDescription.Target.target(
-         name: "DependenciesCore",
+         name: "Dependencies",
          dependencies: [
             "Core",
             "Catcher",
