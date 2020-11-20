@@ -6,8 +6,7 @@ import PackageDescription
 let package = Package(
    name: "Dependencies",
    platforms: [
-      .iOS(.v13),
-      .tvOS(.v13)
+      .iOS(.v13)
    ],
    products: [
       .library(
@@ -18,9 +17,22 @@ let package = Package(
       )
    ],
    dependencies: [
-      .package(url: "git@github.com:sergdort/CombineFeedback.git", from: "0.7.0"),
-      .package(url: "git@github.com:tcldr/Entwine.git", from: "0.9.1"),
-      .package(url: "git@github.com:mattgallagher/CwlPreconditionTesting.git", from: "2.0.0")
+      .package(
+         url: "git@github.com:sergdort/CombineFeedback.git",
+         from: "0.7.0"
+      ),
+      .package(
+         url: "git@github.com:tcldr/Entwine.git",
+         from: "0.9.1"
+      ),
+      .package(
+         url: "git@github.com:mattgallagher/CwlPreconditionTesting.git",
+         from: "2.0.0"
+      ),
+      .package(
+         url: "https://github.com/firebase/firebase-ios-sdk.git",
+         from: "7.1.0"
+      )
    ],
    targets: [
       .catcher,
