@@ -10,9 +10,10 @@ let package = Package(
    ],
    products: [
       .library(
-         name: "Nice",
+         name: "OhWhatAnApp",
          targets: [
-            "DependenciesCore"
+            "Dependencies",
+            "DependenciesTest"
          ]
       )
    ],
@@ -96,10 +97,8 @@ extension PackageDescription.Target {
             "Catcher",
             "Textus",
             .product(name: "FirebaseAuth", package: "Firebase"),
-//            .product(name: "FirebaseCore", package: "Firebase"),
             .product(name: "FirebaseCrashlytics", package: "Firebase"),
             .product(name: "FirebaseFirestore", package: "Firebase"),
-//            .product(name: "FirebaseFirestoreSwift", package: "Firebase"),
          ],
          path: "Sources/Dependencies",
          sources: [
