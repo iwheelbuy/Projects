@@ -10,3 +10,4 @@
 @_exported import FirebaseCore
 @_exported import FirebaseCrashlytics
 @_exported import FirebaseFirestore
+@_exported import FirebaseFirestoreSwift

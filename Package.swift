@@ -13,7 +13,6 @@ let package = Package(
          name: "OhWhatAnApp",
          targets: [
             "Dependencies",
-//            "DependenciesTest"
          ]
       )
    ],
@@ -99,6 +98,7 @@ extension PackageDescription.Target {
             .product(name: "FirebaseAuth", package: "Firebase"),
             .product(name: "FirebaseCrashlytics", package: "Firebase"),
             .product(name: "FirebaseFirestore", package: "Firebase"),
+            .product(name: "FirebaseFirestoreSwift-Beta", package: "Firebase"),
          ],
          path: "Sources/Dependencies",
          sources: [
