@@ -114,8 +114,8 @@
         "repositoryURL": "https://github.com/pointfreeco/swift-case-paths.git",
         "state": {
           "branch": null,
-          "revision": "fb733d87aabb5b053ad782902f2f3d67e0a65ac5",
-          "version": "0.1.1"
+          "revision": "ed1838ab4fa5d47db8aa640736dd5b7672548873",
+          "version": "0.1.2"
         }
       }
     ]

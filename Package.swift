@@ -44,6 +44,7 @@ let package = Package(
       .dependenciesTest,
       .test,
       .combineTests,
+      .coreTests,
       .generalTests,
       .textus
    ]
@@ -149,6 +150,17 @@ extension PackageDescription.Target {
             "DependenciesTest"
          ],
          path: "Tests/Combine"
+      )
+   }
+
+   static var coreTests: PackageDescription.Target {
+      return PackageDescription.Target.testTarget(
+         name: "CoreTests",
+         dependencies: [
+            "Dependencies",
+            "DependenciesTest"
+         ],
+         path: "Tests/Core"
       )
    }
 
