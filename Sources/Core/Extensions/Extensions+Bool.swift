@@ -1,6 +1,6 @@
 import Foundation
 
-extension Bool {
+public extension Bool {
 
    var opposite: Bool {
       return !self
